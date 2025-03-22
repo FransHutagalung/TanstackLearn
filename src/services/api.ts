@@ -1,5 +1,5 @@
 import axios from "axios"
-import { User } from "../types/user"
+import { UserModel } from "../types/user"
 
 const getBaseUrl = 'http://127.0.0.1:5000/'
 const axiosInstance = axios.create({
@@ -8,11 +8,11 @@ const axiosInstance = axios.create({
 })
 
 interface ApiResponse {
-    data: User[]
+    data: UserModel[]
     message: string
 }
 
-export const fetchApi = async (): Promise<User[]> => {
+export const fetchApi = async (): Promise<UserModel[]> => {
     try {
         const response = await axiosInstance.get<ApiResponse>('data')
         console.log("API Response:", response.data)
