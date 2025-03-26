@@ -1,15 +1,18 @@
 import { useState } from "react";
-import { useCreateUser } from "../services/mutation";
+import { useCreateUser, useUpdateUser } from "../services/mutation";
 import { useDesc, useUser } from "../services/queries";
 import { UserModel } from "../types/user";
 import { useIsFetching, UseQueryResult } from "@tanstack/react-query";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { IoIosAdd } from "react-icons/io";
+import { updateUser } from "../services/api";
 
 export const User = () => {
   const { data, isLoading, isPending, isError, fetchStatus, status } = useUser();
   const isFetching = useIsFetching();
   const userDesc = useDesc(data);
   const createUser = useCreateUser();
+  const updateUser = useUpdateUser()
   const { register, handleSubmit, reset } = useForm<UserModel>();
 
   // State untuk menyimpan daftar hobbies
@@ -75,7 +78,12 @@ export const User = () => {
             </span>
           ))}
         </div>
-        <button type="submit" className="w-full bg-blue-300 h-8 rounded-md my-2 cursor-pointer">
+        <button 
+        type="submit" 
+        value={createUser.isPending ? 'Creating...' : 'Submit'}
+        disabled={createUser.isPending}
+        className="w-full bg-blue-300 h-8 rounded-md my-2 cursor-pointer"
+        >
           Submit
         </button>
       </form>
@@ -86,8 +94,16 @@ export const User = () => {
 
       {/* Menampilkan daftar user */}
       {userDesc.map((result: UseQueryResult<UserModel, Error>, index) => (
-        <div key={index} className="my-2 p-2 border">
+        <div key={index} className=
+        {`my-2 flex flex-col p-2 border ${result.data?.status ? "bg-green-200" : "bg-red-200"}`}>
+          <div className="w-full justify-between flex">
           <p><strong>{result.data?.name}</strong></p>
+          <IoIosAdd 
+          onClick={() => {
+            updateUser.mutate(result.data!)
+          }}
+          className="text-4xl cursor-pointer" />
+          </div>
           <p>Email: {result.data?.email}</p>
           <p>Hobbies:</p>
           <ul>

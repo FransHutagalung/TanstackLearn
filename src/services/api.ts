@@ -43,11 +43,24 @@ export const fetchApiDesc = async (id: number): Promise<UserModel> => {
 
 export const createUser = async (data: UserModel) => {
     try {
+        // await new Promise(resolve => setTimeout(resolve, 4000))
         const response = await axiosInstance.post('users', data)
         console.log("API Response:", response.data)
         return response.data
     } catch (error) {
         console.error("Error fetching data:", error)
         throw error
+    }
+}
+
+export const updateUser = async (id : number) => {
+    try {
+        const response = await axiosInstance.put(`users/${id}` , <UserModel>{
+            status : true ,
+        })
+        console.log(response.data)
+        return response.data
+    } catch (error) {
+        console.log(error)
     }
 }
